@@ -7,7 +7,7 @@ class Player {
         this.target = target
         this.backlog = backlog
 
-        this.pid = new PidController(1, 0.3, 0, 0, 1000)
+        this.pid = new PidController(0.8, 0.4, 0, 0, 1000)
         this.week = 0
     }
 
@@ -29,7 +29,7 @@ class Player {
         const orders = walkins > 0 ? Math.floor((Math.random() * walkins)) : 0
         this.backlog += orders
 
-        const refillOrder = Math.round(this.pid.step(this.inventory - this.backlog, this.target))
+        const refillOrder = Math.round(this.pid.step(fill, purchases))
 
         console.log(`Week ${this.week}\nRefills ${fill} Purchases ${purchases}\nInventory ${this.inventory} Backlog ${this.backlog}\nOrders ${refillOrder}`)
 
