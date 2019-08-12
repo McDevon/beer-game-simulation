@@ -37,7 +37,7 @@ const BeerGame = props => {
     useEffect(startHook, [])
 
     return <div>
-        <canvas style={canvasStyle} ref={canvasElement} width="400" height="400" />
+        <canvas style={canvasStyle} ref={canvasElement} width="730" height="320" />
         <div style={columnStyle}>
             <PidControls
                 p={retailer.p} i={retailer.i} d={retailer.d}

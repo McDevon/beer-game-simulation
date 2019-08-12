@@ -1,4 +1,5 @@
 import PidController from "./PidController";
+import RingBuffer from "./RingBuffer";
 
 class Player {
 
@@ -6,8 +7,10 @@ class Player {
         this.inventory = inventory
         this.target = target
         this.backlog = backlog
+        this.deliveries = 4
 
         this.pid = new PidController(0.8, 0.4, 0, 0, 1000)
+        this.history = new RingBuffer(20)
         this.week = 0
     }
 
@@ -16,24 +19,26 @@ class Player {
         
         this.inventory += fill
         let walkins = purchases
-        const backlogDeliveries = Math.min(this.backlog, this.inventory)
-        this.inventory -= backlogDeliveries
-        this.backlog -= backlogDeliveries
+        this.deliveries = Math.min(this.backlog, this.inventory)
+        this.inventory -= this.deliveries
+        this.backlog -= this.deliveries
 
         if (this.inventory > 0) {
             const walkinDeliveries = Math.min(walkins, this.inventory)
             this.inventory -= walkinDeliveries
             walkins -= walkinDeliveries
+            this.deliveries += walkinDeliveries
         }
 
         const orders = walkins > 0 ? Math.floor((Math.random() * walkins)) : 0
         this.backlog += orders
 
-        const refillOrder = Math.round(this.pid.step(fill, purchases))
+        this.refillOrder = Math.round(this.pid.step(fill, purchases))
 
-        console.log(`Week ${this.week}\nRefills ${fill} Purchases ${purchases}\nInventory ${this.inventory} Backlog ${this.backlog}\nOrders ${refillOrder}`)
+        console.log(`Week ${this.week}\nRefills ${fill} Purchases ${purchases}\nInventory ${this.inventory} Backlog ${this.backlog}\nOrders ${this.refillOrder}`)
+        this.history.put(this.inventory - this.backlog)
 
-        return refillOrder
+        return this.refillOrder
     }
 }
 
