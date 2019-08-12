@@ -9,14 +9,13 @@ class Player {
         this.backlog = backlog
         this.deliveries = 4
 
-        this.pid = new PidController(0.8, 0.4, 0, 0, 1000)
+        this.pid = new PidController(0.4, 2, 0, 0, 1000)
         this.history = new RingBuffer(20)
-        this.week = 0
+
+        this.log = ""
     }
 
-    step(purchases, fill) {
-        this.week += 1
-        
+    step(purchases, fill) {        
         this.inventory += fill
         let walkins = purchases
         this.deliveries = Math.min(this.backlog, this.inventory)
@@ -33,10 +32,10 @@ class Player {
         const orders = walkins > 0 ? Math.floor((Math.random() * walkins)) : 0
         this.backlog += orders
 
-        this.refillOrder = Math.round(this.pid.step(fill, purchases))
+        this.refillOrder = Math.round(this.pid.step(this.inventory, this.target))
 
-        console.log(`Week ${this.week}\nRefills ${fill} Purchases ${purchases}\nInventory ${this.inventory} Backlog ${this.backlog}\nOrders ${this.refillOrder}`)
-        this.history.put(this.inventory - this.backlog)
+        this.log = `fill: ${fill} Purch: ${purchases} Inv: ${this.inventory} BL: ${this.backlog} Ord: ${this.refillOrder}`
+        this.history.put(this.inventory) //this.inventory - this.backlog)
 
         return this.refillOrder
     }

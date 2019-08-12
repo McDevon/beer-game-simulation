@@ -63,6 +63,8 @@ class BeerGameSimulation {
             this.running = false
         }
 
+        console.log(`Week ${this.week}\nP1: ${this.players[0].log}\nP2: ${this.players[1].log}\nP3: ${this.players[2].log}`)
+
         this.redraw()
     }
 
