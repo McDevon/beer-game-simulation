@@ -15,6 +15,7 @@ class BarChart {
         
         this.cx.strokeStyle = '#FFAA00'
         this.cx.fillStyle = '#FFFFFF'
+        this.cx.lineWidth = 2
         for (let i = 0, count = data.length; i < count; i++) {
             const value = data[i]
             this.cx.beginPath()
@@ -27,7 +28,15 @@ class BarChart {
             this.cx.fill()
             this.cx.stroke()
         }
-        
+
+        this.cx.strokeStyle = '#000000'
+        this.cx.lineWidth = 1
+        this.cx.beginPath()
+        this.cx.moveTo(x, y)
+        this.cx.lineTo(x, y + this.height)
+        this.cx.moveTo(x, y + this.height / 2)
+        this.cx.lineTo(x + this.width, y + this.height / 2)
+        this.cx.stroke()
     }
 }
 
